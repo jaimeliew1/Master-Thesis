@@ -1,0 +1,96 @@
+\title{LAC - Assignment 5}
+
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+%\documentclass[11pt]{article}
+\usepackage{setspace} %to set line spacing
+\usepackage{fullpage} %uses up more of the page
+\usepackage{titlesec} %to edit section titles
+\usepackage{graphicx} %to import graphics
+%\usepackage{siunitx}
+%\usepackage{pdflscape}
+%\usepackage{longtable}
+\usepackage[title]{appendix}
+\usepackage{float}%for the H option in figures
+\usepackage{bigstrut} %for excel to latex tabular converter
+\usepackage{lscape} %for landscape pages
+\usepackage{pdfpages}
+\usepackage{amsmath} %\begin{align} - \end{align}
+\usepackage[framed,numbered]{mcode}  %imports and formats .m files
+\usepackage{multirow}
+%\usepackage{tikz}
+%\usetikzlibrary{shapes.geometric, arrows}
+%\usepackage{iftex}
+%\usepackage{array,booktabs}
+\usepackage{subcaption}
+\usepackage{bm} %Bold in mathmode
+%\usepackage{chngcntr}
+%\counterwithout{figure}{section}
+%\counterwithout{table}{section}
+%\counterwithout{figure}{chapter}
+%\counterwithout{table}{chapter}
+\captionsetup{font=small}
+%\usepackage[labelfont=bf]{caption}
+%\newcolumntype{C}[1]{>{\centering\arraybackslash}m{#1}}
+
+% BIBLIOGRAPHY SETTINGS
+\usepackage{natbib} %for harvard referencing
+\bibliographystyle{abbrvnat}
+\setcitestyle{numbers,square}
+
+%\cite{berg2009active}  -> [1]
+%\citet{berg2009active}  -> Berg et al. [1]
+%\citeauthor{berg2009active} -> Berg et al.
+
+
+
+
+\graphicspath{{./Figures/}}
+
+%\myFigure[figure size]{filename.jpg}{Description}{figx}
+%\myFigure[]{}{}{}
+\newcommand{\myFigure}[4][0.8]{
+\begin{figure}[H] 
+
+	\centering
+	\setlength\fboxsep{1pt}
+	\setlength\fboxrule{0.5pt}
+
+	\includegraphics[width=#1\textwidth]{#2}
+	\caption{\small #3}
+	\label{#4}
+\end{figure}
+}
+
+\newcommand{\myFigureSideSide}[8]{
+\begin{figure}[H] 
+
+	\centering
+    \begin{subfigure}[b]{0.49\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{#1}
+    \caption{\small #2}
+	\label{#3}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.49\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{#4}
+    \caption{\small #5}
+	\label{#6}
+    \end{subfigure}   
+% 	\setlength\fboxsep{1pt}
+% 	\setlength\fboxrule{0.5pt}
+	\caption{\small #7}
+	\label{#8}
+\end{figure}
+}
+
+
+
+\setlength{\parindent}{0cm} %removes paragraph indentation
+%\newcommand{\sr}{\rule[-0.45cm]{0pt}{0.9cm}}
+
+
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\normalsize\it\bfseries}{\thesubsubsection}{1em}{}
