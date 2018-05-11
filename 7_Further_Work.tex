@@ -1,0 +1,16 @@
+
+\subsection{Tip Trajectory Tracking Controller}
+The analysis in the project focuses on disturbance rejection in tip deflection and root bending moment. However it is also possible to have the blades follow a designated trajectory. This could be advantageous to use in reducing the risk of tower strikes by increasing tip deflection as it passes the tower. Although such an objective may be detrimental to fatigue load reduction, it could prove useful for highly flexible blades in turbulent or inverse shear conditions. 
+\\~\\
+In order to do this, the problem is reformulated into a tracking control problem. Instead of just considering a disturbance input, $d$, there is also a reference input, $r_i$, which is the target tip deflection for blade $i$. A full state space feedback model for a single blade system has the form shown in FIgure XX
+\myFigure{IPC_BlockDiagram_Tracking.png}{}{}
+\\~\\
+\subsection{Tip Trajectory Tracking with Load minimisation}
+A control system using both tip deflection and root bending sensors can be used to both track a desired tip deflection trajectory while minimising root bending moment fluctuations. 
+
+\subsection{Measurement Noise}
+The analysis in this thesis assumes perfect measurements of tip deflection. In reality, there will be some degree of measurement noise as well as non-uniformity in the frequency response. Knowing this, the results shown in this project can be considered as ideal. To take into account the dynamics of the sensor, the block diagram for the system is updated to include measurement noise, $n$.
+
+\myFigure{MeasurementNoise}{}{}
+
+The frequency response of the sensor should be encapsulated in the plant block, $P$. It is now important to also consider the transfer function between measurement noise and the tip deflection, which is also the sensitivity function, $S$, used in this analysis. The magnitude of $S$ corresponds to the level of amplification or attenuation of the measurement noise. If the spectrum of the measurement noise is known, then a prediction of how much the noise will influence the control output can be estimated. Such analysis should be taken into account when implementing the iRotor in an IPC system.

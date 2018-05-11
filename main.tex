@@ -1,43 +1,86 @@
 \input{0_Preamble.tex}
-\input{0_Definitions.tex}
+ \newcommand{\hinfty}{$\mathcal{H}_\infty$~} 
+ \newcommand\norm[1]{\left\lVert#1\right\rVert}
 
 \begin{document}
+\includepdf{CoverPage}
+%\input{0_Titlepage.tex}
 
-\input{0_Titlepage.tex}
+\pagenumbering{Roman} 
+\input{0_PreReport}
 
-\section{Introduction}
+\pagenumbering{arabic}
+\chapter{Introduction}
+\input{Chapters/Introduction.tex}
 
+\chapter{Theoretical Framework}
+\input{Chapters/Theoretical_Framework.tex}
+
+\chapter{Blade Modelling}
+\input{Chapters/Blade_Modelling.tex}
+
+\chapter{Tip Disturbance Rejection Controller}
+\input{Chapters/Tip_Disturbance_Rejection.tex}
+
+\chapter{Tip Trajectory Tracking Controller}
+\input{Chapters/Tip_Trajectory_Tracking.tex}
+
+\chapter{Things I have Written But Haven't Integrated in The Report Properly}
 \section{Literature Review}
 \input{1_Literature_Review.tex}
 
-\section{Theoretical Analysis}
-In this section, the behaviour of the tip deflection is analysed and formulated in a way which is suitable for controller design. First, a model will be presented which describes how the root bending moment of turbine blades behaves. Then, the model will be modified to represent tip deflection.
-\subsection{Blade Root Bending Moment Modelling}
-A modified blade model used in \cite{1_Lu} and ?? will be used to represent the influences and effects on blade root bending moments on wind turbine blades. Each blade is modelled using the first flapwise bending mode. The wind turbine model in Figure \ref{fig:turb_model} considers the inputs from the blade pitch angle, $\theta_i$, and the relevant output in this case is the flapwise root bending moment of each blade, $M_i$. The collective pitch control is also included in the model diagram as it provides an influence on the blade pitch. All other disturbances on the turbine including turbulence, aerodynamic and structural effects, are encapsulated in the term $D(t)$.
+\section{Theoretical Content and Methodology}
+\input{2_Theoretical_Content_Methodology.tex}
+% Blade tranformations
+% Performance - disturbance rejection and sensitivity
+% Nyquist stability
+% Outline control objectives
 
-FIGURE GOES HERE fig:turbine_model
 
-Linearizing this model about an operating point with a fixed rotor speed, the collective pitch controller will provide a constant pitch demand for the turbine. 
 
-\subsection{Numerical Assessment}
-The transfer function between tip deflection and root bending moment is investigated using numerical analysis methods on simulated time series data. Time series data for tip deflection and bending moment were generated using HAWC2 over a range of windspeeds from 4m/s to 26m/s, and for both normal and extreme turbulence models. 
-\\~\\
-ASSUMPTIONS (tower shadow, wind shear, etc)
-\\~\\
-The system identification package in MATLAB is used to estimate the transfer function. A fit percentage is given to each fit using the Normalized Root Mean Squared Error (NRMSE), defined as
-$$\text{NRMSE}=\left(\frac{\norm{x_{\text{meas}}-x_{\text{model}}}_2}{\norm{x_{\text{meas}}-\overline{x_{meas}}}_2}\right)$$
-Results show that a transfer function with 2 poles and 1 zero is adequate for representing the relationship between tip deflection and bending moment compared to other linear systems. This implies a relationship between the tip deflection rate and a second order system describing root bending moment:
-$$a\ddot{M} + b\dot{M} + cM = \dot{x}_{td}$$
+\section{Experimental Setup}
+\input{3_Experimental_Setup.tex}
+% 3 simulation types: simplified, open loop, close loop
+% Hawc2-Python interface
+% IPC implementation in HAWC2
+
+\pagebreak
+\section{Relating Blade Tip Deflection and Blade Root Bending Moment}
+\input{3.5_TD_vs_RBM.tex}
 
 
 \pagebreak
+\section{Blade Modelling}
+\input{4_Blade_Model.tex}
 
-\section{Methodology}
-\input{2_Methodology.tex}
+\pagebreak
+\section{Open Loop Output Estimation}
+\input{5_OL_Modeling.tex}
+
+\pagebreak
+\section{Control Design}
+\input{6_Control_Design.tex}
+
 
 \section{Results}
 \input{3_Results.tex}
 \pagebreak
+
+\section{Further Work}
+\input{7_Further_Work.tex}
+\pagebreak
+
 \bibliography{0_Bibliography}
 
+
+
+
+
+%%%%%%%%%%%%% Appendices %%%%%%%%%%%%%%%%%%
+\pagebreak
+\section{Appendix A}
+\input{Appendices/99_Appendix_Python_HAWC2.tex}
+
+\section{Appendix B}
+\input{Appendices/SensorFusion.tex}
 \end{document}

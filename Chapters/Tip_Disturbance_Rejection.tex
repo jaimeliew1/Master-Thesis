@@ -1,0 +1,92 @@
+\section{Background}
+\subsection{Collective Pitch Control}
+Collective pitch control is the basis for turbine power control in modern wind turbines when operating above rated wind speed. Two common objectives are constant torque control or constant power control. Both control objectives are achieved by collectively pitching the turbine blades to control the aerodynamic torque of the rotor. 
+\\~\\
+It is common to superimpose a high bandwidth controller over the the power/torque controller to decrease the fore-aft tower motion. This is achieved by introducing artificial damping into the tower motion dynamics, reduces fatigue loads in the tower root as well as providing a more stable power output. Control at these frequencies has a much higher bandwidth than the power control loop. Therefore the two controllers are generally superimposed without noticeable interference \cite{15_bossanyi}. \citet{17_Geyler} (check reference), the tower fore-aft damping control is highly coupled with the speed control due to the change in axial wind speed. 
+
+\subsection{Individual Pitch Control}
+Although collective pitch and torque control methods can reduce oscillations in the tower and drive train, it is ineffective at reducing certain oscillations in the blades. The reason for this is due to azimuth angle dependent loads such as wind shear and tower shadow. Furthermore, each blade experiences different stresses due to variation in the turbulent structure of the wind field. This is the motivation for individual pitch control (IPC). IPC has shown promising results in literature and simulation, and has only recently been introduced into commercial wind turbines, such as the Vestas V164-9.5.
+\\~\\
+IPC in literature has shown great reductions in flapwise blade loads using a variety of controller designs. \citet{4_trudnowski} achieved an 86\% reduction in flapwise loads using only the rotor angle as an input signal, however the simulation neglected the effects of turbulence. \citet{5_Bossanyi} showed reductions in equivalent fatigue loads in the out-of-plane (OOP) blade root moments, as well as shaft and yaw bearing moments using IPC compared to CPC. \citet{6_Mirzaei} compared model predictive control and PI control for an IPC system, and found comparable reductions in OOP blade root bending moments in stochastic wind speeds based on LIDAR measurements. \citet{14_Selvam} compares IPC systems using PI control as well as LQG control. PI control achieved load reductions at low frequencies, and the LQG controller was able to achieve load reductions at a higher bandwidth, including 2P and 3P, therefore able to reduce loads on non-rotating parts such as the nacelle, yaw bearing and tower. IPC using~\hinfty control was addressed in \citet{1_Lu}, \citet{2_Kanev} and \citet{17_Geyler}, showing not only reductions in OOP blade root bending moments, but also adequate robustness from unmodelled and stochastic behaviour in the system. In all the considered literature, and to the best of the authors knowledge, load reductions were best achieved in OOP blade root moments rather than in plane moments. The reason for the poor performance of edgewise oscillation control is due to the large magnitude of the gravity loading which can not be avoided easily \cite{4_trudnowski}.
+\\~\\
+An issue with IPC is the pitch rate of the blades. Pitch rates required to achieve decent reductions in fatigue load are around $\pm10$ deg s$-^1$, which is considered quite high\cite{15_bossanyi}. However, the required pitching rate decreases with rotor diameter due to the decrease in rotational frequency. This justifies the use of IPC for larger wind turbine models. Higher order harmonic control may not meet the limiting pitch rate requirements, which explains why most papers consider low frequency oscillations (usually up to 3P). \cite{17_Geyler}
+\\~\\
+There are also mechanical concerns regarding the use of IPC. An increase in wear is expected as the pitch must shift at each rotor rotation. Heat dissipation could also be a concern in the pitch actuators, and should be taken into account in the performance of the actuators at different operating temperatures.
+
+
+\subsection{Active Aerodynamic Load Control}
+Active aerodynamic load control (AALC) devices such as trailing edge flaps and micro tabs have also been an active area of research. The advantage of AALC devices is their high bandwidth, allowing for controllability of high frequency dynamics. \citet{7_Berg} and \citet{10_Wilson} have researched the effects of load reduction using trailing edge flaps, showing a 20-32\% reduction in blade root stress, which can allow for a 10\% increase in blade length wihtout exceeding the original equivalent fatigue damage. These papers use tip deflection and tip deflection rate  as controller inputs, making them highly relevant to this the topic at hand. The research in this field is so far restricted to small scale wind turbine models and simulations due to the difficulty and cost of implementing and maintaining such a system on a full scale wind turbine. 
+
+
+
+
+
+\section{Baseline Control Design}
+IPC control is notoriously difficult to compare in literature. There is great variation between the aeroelastic code used, control methodology and wind turbine model. Blade load reduction ranges from 5\% (source) to 85\% (source). 
+
+\subsection{Performance and Robustness}
+show performance and robustness for various Kp and Ki and different wind speeds.
+
+\section{Single frequency Control Design}
+The first feedback controller to successfully reduce fatigue loads in this project attenuates disturbances at 1P only. This controller consists of a second order low pass filter with a cutoff frequency set at $f_{1P}$, as well as two identical lead compensators:
+
+$$C_{1P}(s) = K\underbrace{\frac{1}{s^2 + 2\zeta\omega s + \omega^2}}_\text{Low pass filter}\underbrace{\frac{(1-aTs)^2}{(1-Ts)^2}}_\text{Lead compensator}$$
+
+The parameters of this controller are defined in Table \ref{tab:C1p_params}. Figure \ref{fig:ipc04_C} shows the bode plot of the controller transfer function. Note that the controller magnitude response peaks at 1P and is highly attenuated at all other frequencies. Furthermore, the phase response at 1P has a phase lead of XXdegrees to account for the lag in the system. 
+
+To do: redo plot to include phase response.
+\myFigure[0.7]{ipc04_C.png}{}{fig:ipc04_C}
+The full continuous transfer function of this system is:
+\begin{equation}\label{eq:C1pa}
+C_a = \frac{0.9217s^2 + 0.2030s^1 + 0.0112}{s^4 + 18.4594s^3 + 87.1180s^2 + 27.0252s^1 + 85.1589}
+\end{equation}
+Using the bilinear transform on Equation \ref{eq:C1pa} for $f_s=100Hz$, the controller is discretised to:
+
+
+\begin{equation}C_d = \frac{2.1077\times 10^{-5}z^4+4.6387\times 10^{-8}z^3-4.2108\times 10^{-5}z^2  -4.6336\times 10^{-8}z^1  +2.1031\times 10^{-5}}{z^4-3.8234z^3+ 5.4781z^2-3.4861z^1+ 0.8313}
+\end{equation}
+
+Todo: represent coefficients in a table instead of a long equation.
+Which has the corresponding difference equation:\\
+\begin{multiline}
+y[k]=2.11\times 10^{-5}x[k]+4.64\times 10^{-8}x[k-1]-4.21\times 10^{-5}x[k-2]-4.63\times 10^{-8}x[k-3]+2.10\times 10^{-5}x[k-4]\\+3.82y[k-1]-5.48y[k-2]+3.49y[k-3]-0.83y[k-4]
+\end{multiline}
+
+\begin{table}[H]
+\centering
+\caption{My caption}
+\label{tab:C1p_params}
+\label{my-label}
+\begin{tabular}{r|l}
+\textbf{Parameter}           & \textbf{Value} \\ \hline
+Gain, $K$                    & 0.921734          \\
+Damping coefficient, $\zeta$ & 0.05           \\
+Cutoff frequency, $\omega$   & 1.005          \\
+Time constant, $T$           & 0.184          \\
+Attenuation constant, $a$    & 29.11         
+\end{tabular}
+\end{table}
+
+\subsection{Load contributions for $f_{np}$ for $n=1,2,3,4$}
+
+
+
+
+\section{$f_{1p}$ and $f_{2p}$ Control Design}
+
+\section{Performance in Normal Turbulence}
+
+\section{Performance in Extreme Turbulence}
+
+\section{Performance in Inverse Shear}
+
+
+\myFigure[0.7]{ipc04_OL_CL_bode.png}{}{fig:ipc04_OL_CL}
+\myFigure[0.7]{ipc04_S.png}{}{fig:ipc04_S}
+\myFigure[0.7]{ipc04_L.png}{}{fig:ipc04_L}
+\myFigure[0.7]{ipc04_nyquist.png}{}{fig:ipc04_nyquist}
+
+
+
+
+

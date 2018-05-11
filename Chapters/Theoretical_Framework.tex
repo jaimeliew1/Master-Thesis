@@ -1,0 +1,320 @@
+\section{Relationship between Tip Deflection and Blade Loads}
+In order to reduce blade loads with tip deflection control, a relationship between blade loads and tip deflection must exist. In particular, bending moment at the blade root is of interest as this is where the largest load occurs. In order to show a relationship analytically, a simplified structural model of a wind turbine blade is presented in this section. It should be noted that loads and deflection in the flapwise direction is considered. 
+\\~\\
+The blade is assumed to behave as an Euler-Bernoulli cantilever beam with length $L$ and uniform bending stiffness, $EI$. The flapwise deflection of the beam, $u(t, z)$, at a distance, $z$, and at a time, $t$, from the fixed end, can be expressed a linear combination of the mode shapes:
+
+\begin{equation}
+    u(t, z) = \sum_{i=1}^\infty \alpha_i(t) \gamma_i(z)
+\end{equation}
+where $\alpha_i$ is the amplitude of the $i$th mode, and $\gamma_i$ is the non-dimensional shape of the $i$th mode. $\gamma_i(z)$ is normalized such that its value at the tip is 1. That is, $\gamma_i(L) = 1$. Therefore, $\alpha_i$ has units of distance and can be interpreted as the tip deflection distance contribution for the $i$th mode. That is,
+\begin{equation}
+    u(t, L) = \sum_{i=1}^\infty \alpha_i(t)
+\end{equation}
+\\
+From Euler-Bernoulli beam theory, the bending moment, $M(z)$, is expressed as:
+\begin{equation}
+    M(z) = \frac{EI(z)}{\rho(z)}
+\end{equation}
+Where $EI$ is the flexural rigidity defined as the product of the area moment of inertia and the Young's Modulus of the beam material, and $\rho{z}$ is the radius of curvature at position $z$ along the blade. The radius of curvature can be calculated from the second derivative of deflection: $\rho(z) = 1/\frac{\partial ^2 u}{\partial z^2}(z)$. Substituting XX into XX, and noting that $\alpha_i$ is invariant to transverse displacement, the expression for $M(z)$ becomes:
+\begin{equation}
+    M(z) = EI(z)\sum_{i=1}^\infty \alpha_i(t)\frac{\partial ^2 \gamma_i}{\partial z^2}(z)
+\end{equation}
+     
+Now assume only the first flapwise mode is relevant and consider the contribution from all higher modes as negligible. That is, assume:
+\begin{equation}
+    u(t, z) \approx  \alpha_1(t) \gamma_1(z)
+\end{equation}
+From XX, and XX, the tip deflection $y(t)$ and the root bending moment, $M(t)$, can be related by:
+\begin{equation}
+    M(t) = EI(0)\left.\frac{\partial ^2 \gamma_i}{\partial z^2}\right\vert_{z=0}y(t)
+\end{equation}
+Or put another way, the proportionality between tip deflection and root bending moment is:
+\begin{equation}
+    \frac{y(t)}{M(t)} = \frac{1}{EI(0)\left.\frac{\partial ^2 \gamma_i}{\partial z^2}\right\vert_{z=0}}
+\end{equation}
+From the specifications of the DTU10MW turbine, this proportionality constant can be approximated. The first modal shape is determined using the eigenvalue solver in HAWC2, which provides $\gamma_i(z)$. A spline is fit to $\gamma_1(z)$, which is then numerically integrated twice and evaluated at $z=0$ to get the curvature at the root. Using the parameters in Table xx to evaluate Equation XX, the proportionality between tip deflection and RBM is estimated to be $y(t)/M(t) = 3.827 \times 10^{-7} m/Nm$. In section XX, this result is validated and shows that the actual proportionality is higher due to the unmodelled dynamic effects.
+
+\begin{table}[H]
+\centering
+\caption{My caption}
+\label{my-label}
+\begin{tabular}{r|l}
+\textbf{Parameter} & \textbf{Value} \\ \hline
+$E(0)$         & $ 1.2612\times 10^{10}$ $Nm^{-2}$   \\
+$I(0)$         &     $4.8374 m^4$  \\
+   $\left.\frac{\partial ^2 \gamma_i}{\partial z^2}\right\vert_{z=0} $     &    $4.2827\times 10^{-5} m^{-2}$  
+\end{tabular}
+\end{table}
+\\~\\
+
+
+A relationship between tip deflection and root bending moment is investigated using numerical analysis methods on simulated time series data. Time series data for tip deflection and bending moment were generated using HAWC2 over a range of windspeeds from 4m/s to 26m/s, using the normal turbulence model defined in IEC 61400. For each wind speed, 30 minutes of simulation data with a time step of $0.01s$ is collected. 
+\\~\\
+Flapwise tip deflection and flapwise root bending moment data points for all three blades are binned and plotted in Figure \ref{fig:betterName}. Lighter regions indicate a larger occurrence of data points. The plot shows a strong correlation between the two measurements. Two key observations can be made from this analysis. First, the simulated results show linear proportionality between tip deflection and RBM, where the proportionality constant remains at a similar value ($~3\times 10^{-7} to 3.5\times 10^{-7} m/Nm$) as the wind speed changes. The constant proportinalty is supported by the Euler-Bernoulli cantilever analysis in Section xx, however it is noted that the simulated results have a higher proportionality constant compared to the predicted value of $1.7 \times 10^{-7} to 2.2 \times 10^{-7}$. This is likely due to the dynamic nature of the simulation, whereas the theoretical analysis considers a statically loaded blade. Secondly, the coefficient of determination ($R^2$) shows a high similarity between tip deflection and RBM for low wind speeds (0.92), and a decrease in similarity for higher windspeeds (0.84). This is visually indicated by how linear the cloud of data points resides on a line. Higher wind speeds tend to have more spread data points, indicating that tip deflection measurements do not completely explain the variations in RBM measurements. This suggests that an IPC which reduces tip deflection fluctuations will also show a reduction in the blade root bending moment.
+
+\myFigure[0.9]{RBM_TD_Correlation_TimeSeries.png}{Example time series of HAWC2 simulation showing root bending moment and tip deflection. (wsp = 6m/s, normal turbulence model)}{fig:betterName_ts}
+\myFigure[1]{RBM_TD_Correlation.png}{Caption}{fig:betterName}
+
+Even observing the time series of tip deflection and RBM (Figure \ref{fig:betterName_ts}), a clear correlation and periodicity between the measurements can be observed. To demonstrate the periodicity, the tip deflection and RBM are bin plotted against rotor azimuth angle in Figure \ref{fig:1pworm}, where lighter regions indicate a higher frequency of observations. The dominating $F_1p$ disturbances are clearly observed as each blade follows an almost sinusoidal distribution for tip deflection and RBM. As expected, each blade measurement is offset by $120^o$ due to three-fold rotational symmetry of the rotor. Furthermore, the phase lag of the system can be approximated by observing the location of the minimum tip deflection and RBM (negative RBM is bending towards tower). For example, blade 1 is vertical upwards at an azimuth angle of $\psi=0^o$, however the peak tip deflection and RBM occurs at $\psi\approx45^o$, indicating a $45^o$ phase lag between the $F_{1p}$ aerodynamic forces and the first flapwise bending mode. This knowledge is valuable for the control design as a TDC which acts at $F_{1p}$ inputs may be unstable if it does not account for the 45$^o$ lag in the aerodynamic forces. This is further elaborated in Section XX. 
+
+\myFigure[]{TD_RBM_VS_Azim_hexbin.png}{binned plot showing occurrence of simulation data points for RBM, tip deflection versus rotor azimuth, where lighter regions indicate more frequent. (wsp=18m/s, 3$\times$ 10minute runtime)}{fig:1pworm}
+
+Another representation of the tip deflection of the blade is in the frequency domain. Figure \ref{fig:spectrum_td} shows the power spectral density of the tip deflection at two different zoom levels for the simulation at wsp=18m/s. The upper figure confirms the observation in Figure \ref{fig:1pworm} that $F_{1p}$ fluctiatons dominate. However, it can also be seen in the lower figure that harmonics of $F_{1p}$ are also present in the signal despite being significantly smaller. This indicates that attenuating disturbances at multiples of $F_{1p}$ should be adequate in reducing flapwise blade loads.
+\myFigure[0.8]{TipDeflection_Spectrum.png}{wsp=18m/s,3$\times$10 minute run time}{fig:spectrum_td}
+
+
+% THIS IS WRONG
+% In the case that the beam is statically loaded with a point force, $p$ at the tip, then the root moment, $M(0)$ and tip deflection, $x(L)$ can be expressed as:
+% $$M(0) = pL$$
+% $$x(L) = \frac{pL^3}{3EI}$$
+% which leads to the expression:
+% $$x(L) = \frac{L^2}{3EI}M(0)$$
+% Similarly, in the case that the beam is uniformly loaded with force per unit length, $q$, then $M(0)$ and $x(L)$ can be expressed as:
+% $$M(0) = \frac{qL^2}{2}$$
+% $$x(L) = \frac{qL^4}{8EI}$$
+% which leads to the expression:
+% $$x(L) = \frac{L^2}{4EI}M(0)$$
+
+% Note how in both cases, $x(L)$ is proportional to $M(0)$ and the proportionality is independent of the magnitude of the load. As the force distribution of a typical turbine blade increase along the length of the blade, the actual relationship between tip deflection and root bending moment is likely similar to the two cases presented above. In other words, the proportionality constant between tip deflection and root bending moment for a static blade is likely in the range:
+% $$\frac{L^2}{4EI} < \frac{x(L)}{M(0)} < \frac{L^2}{3EI}$$
+
+% From the specifications of the DTU10MW turbine, the range of flapwise proportionality constants can be estimated. The length of the blades from blade root to tip is $86.366m$. The stiffness of the blade varies along its length. So an equivalent flapwise stiffness $\overline{EI}=1.1\times 10^{10} Nm^{-2}$ is determined in Appendix XX (To do). From these values, it is estimated that the proportionality is in the range:
+% $$1.7 \times 10^{-7} < \frac{x(L)}{M(0)} <  2.2\times 10^{-7} \qquad m/Nm$$
+% It should be noted that this model assumes the load is static, which is not the case for the fluctuating blade loads. In section XX, this result is validated and shows that the actual proportionality is higher due to the unmodelled dynamic effects.
+%ASSUMPTIONS (tower shadow, wind shear, etc)
+%\\~\\
+%The system identification package in MATLAB is used to estimate the transfer function. A fit percentage is given to each fit using the Normalized Root Mean Squared Error (NRMSE), defined as
+%$$\text{NRMSE}=\left(\frac{\norm{x_{\text{meas}}-x_{\text{model}}}_2}{\norm{x_{\text{meas}}-\overline{x_{meas}}}_2}\right)$$
+%Results show that a transfer function with 2 poles and 1 zero is adequate for representing the relationship between tip deflection and bending moment compared to other linear systems. This implies a relationship between the tip deflection rate and a second order system describing root bending moment:
+%$$a\ddot{M} + b\dot{M} + cM = \dot{x}_{td}$$
+
+\section{Quantifying Fatigue Loads}
+The turbine simulations produce complicated time histories of the loads experienced in the various components of the turbine. In order to quantify and compare the fatigue damage experienced in these components, a load spectrum is calculated. A load spectrum decomposes a complicated stress history into stress cycles of varying amplitude. This can be achieved using rain flow counting \cite{matsuishi1968fatigue}. The fatigue loads in the turbine components can be quantified by calculating the equivalent load at 1Hz. The equivalent load is the amplitude of a 1Hz oscillating load which produces the same amount of fatigue damage to a component as a mixed load spectrum. It is a way of comparing different load spectra of the same component. The Equivalent load (Note: abbreviate to DEL instead of S_eq), $S_{eq}$, is calculated for $N_{eq}$ cycles as follows:
+
+\begin{equation}\label{eq:DEL}
+S_{eq} = \left(\frac{\sum_i N_iS_i^m}{N_{eq}}\right)^{\frac{1}{m}}
+\end{equation}
+
+Where $S_i$ is the $i$th load cycle amplitude, $N_i$ is number of full cycles at $S_i$, $m$ is the material W\"{o}hler curve exponent of the component in question. In this analysis, a W\"{o}hler curve exponent of 4 and 10 is used for steel (tower, rotor shaft, etc) and composite materials (ie. rotor blades) respectively. $N_eq$ is the number of cycles experienced of load $S_{eq}$. For 600 second simulations, which is the case for this analysis, A 1Hz equivalent load requires $N_{eq}=600$. It can be observed from Equation \ref{eq:DEL} that the damage equivalent load is highly sensitive to large amplitude oscillations due to the exponentiation of the W\"{o}hler curve exponent. Therefore even a small reduction in load amplitudes can lead to large reduction in lifetime fatigue loads in the turbine components.
+
+
+
+\section{Disturbance Rejection Theory}
+
+Unlike the the collective pitch controller, which aims to minimise the error between the power output and a target power output, the task of an IPC is disturbance rejection. Consider the linear feedback system in Figure fig:analModel:3. The system to be controlled, also known as the plant in control theory, is represented as $P$. The output $Y$ is passed through a controller transfer function $C$ which is to be designed to achieve a certain objective. Frequency components of the disturbance signal, $D(s)$ are passed through to the output, $Y(s)$ described by the closed loop transfer function.  A number of different transfer functions made up of $P$ and $C$ are referred to in this report, each with a different application and purpose. These are described as follows:
+\myFigure{Turbine_blockDiagram_P_K.png}{cap}{}
+\subsection*{Open Loop Transfer Function (Plant), $P$}
+
+\subsection*{Closed Loop Transfer Function, $G_{CL}$}
+\begin{equation}
+   G_{CL} = \frac{P}{1+PC}
+\end{equation}
+
+\subsection*{Loop Transfer Function, $L$}
+\begin{equation}
+   L = PC
+\end{equation}
+
+\subsection*{Sensitivity Function, $S$}
+\begin{equation}
+   S = \frac{1}{1+PC}
+\end{equation}
+
+
+
+
+
+ 
+
+\ref{fig:analModel:4}. The closed loop transfer function reveals fundamental design parameters in this disturbance rejection.
+\begin{itemize}
+\item Disturbances are attenuated when the denominator of $G(s)$ is large.
+\item Disturbances are passed through to the output signal when the denominator is small.
+\item the $G(s)$ is unstable when the denominator equals zero.
+\end{itemize}
+To perform well, the denominator of the system should be large at the frequency it wishes to reject. In other words, $P(s)C(s)$ should be large for an $s$ corresponding to the desired frequency to reject. For robustness and stability, the denominator of the blade system should not be equal to zero. Measures of performance and robustness in a disturbance rejection control system are outlined in the following sections.
+
+\section{Performance Measures for Disturbance Rejection}
+The objective of the controller is to attenuate the effect of disturbances, $d(s)$ on the system output, $Y(s)$. One way of measuring the effectiveness of a disturbance rejection control system is to analyse the magnitude of the sensitivity function, $S(s)$ (or $S$ for brevity). The sensitivity function is defined as \cite{astrom2010feedback}:
+\begin{equation}
+    S = \frac{1}{1+PC}
+\end{equation}
+which is simply the closed loop transfer function (Equation Xx) divided by the plant. By looking at the magnitude of the sensitivity function, the level of attenuation or amplification of the closed loop system compared to the open loop system can be determined. Furthermore, if it is assumed that the disturbance spectrum is the same for the open and closed loop system, then the level of attenuation or amplification does not require knowledge of the input signal at all. Instead, it is sufficient to estimate the close loop output spectrum if the open loop output spectrum and the sensitivity function is known. This conjecture is proven below:
+\\~\\
+Consider an open loop system, $P$ with input $d$ and output $Y_{OL}$, and the closed loop system, $P/(1+PC)$ with the same input, $d$, and output $Y_{CL}$. The magnitudes of $Y_{OL}$ and $Y_{CL}$ are expressed as:
+\begin{align}
+    |Y_{OL}| &= |P||d| \\
+     |Y_{CL}| &= |\frac{P}{1+PC}||d| 
+\end{align}
+Dividing Equation XX by XX gives an expression for the sensitivity function:
+\begin{equation}
+ \frac{|Y_{CL}|}{|Y_{OL}|} = \frac{1}{|1+PC|} = |S| 
+\end{equation}
+
+
+
+Therefore, one is able to estimate the closed loop output, $Y_{CL}$ for a given $P$, $C$ $Y_{OL}$, and this is possible without knowing the disturbance spectrum $d$. Additionally, the level of amplification or attenuation is determined by the magnitude of the sensitivity function. A naive approach of designing a disturbance rejection controller would be to have low sensitivity over a wide bandwidth. However, there are theoretical limitations in doing so. Bode's Integral Formula is a Theorem outlining a fundamental constraint in tuning the sensitivity function of a control system.
+
+\begin{theorem}
+(Bode’s integral formula). Assume that the loop transfer function $L(s)$ of a feedback system goes to zero faster than $1/s$ as $s \rightarrow \infty$, and let $S(s) = 1/(1 + L(s))$ be the sensitivity function. If the loop transfer function has poles $p_k$ in the right half-plane, then the sensitivity function satisfies the following integral \cite{astrom2010feedback}:
+$$\int_0^\infty log|S(i\omega)|d\omega = \pi \sum p_k$$
+\end{theorem}
+So for a stable system with no poles in the right hand plane, which is the case for this project, the integral evaluates to zero on the right hand side. This is essentially a conservation law of the area under the sensitivity function. If a system attenuates a signal at a certain frequency, it must amplify the signal at another. A tradeoff must therefore be made between disturbance attenuation and amplification. This can be taken into account be only attenuating short bands of the signal at $f_{1p}$, $f_{2p}$ etc, and amplifying frequencies with a small disturbance contribution.  
+
+
+\section{Robustness Measures for Disturbance Rejection}
+As well as achieving performance specifications, the closed loop system must be stable. Stability can be inferred in a number of ways. One such method is to ensure that the closed loop system has no poles in the right hand plane of the s-plane. Another method is to analyze the bode plot of the loop transfer function. EXPLAIN. An equivalent way of determining stability is to count the encirclements on a Nyquist plot. A Nyquist plot..
+\begin{theorem}
+(Simplified Nyquist criterion). Let $L(s)$ be the loop transfer function for a negative feedback system and assume that L has no poles in the closed right half-plane ($Res \ge 0$) except for single poles on the imaginary axis. Then the closed loop system is stable if and only if the closed contour given by $\Omega = {L(i\omega):-\infty < \omega < \infty}:\subset \C$ has no net encirclements of the critical point, $s = -1$.
+\end{theorem}
+
+
+
+
+
+
+
+
+\section{Blade System Transformations}
+Three approaches for transforming rotor data are commonly considered in literature when designing an IPC system. Each of the three approaches will be explored in this project to determine the most effective control structure for tip deflection control. 
+\subsection{Single Blade Control}
+Single blade control requires a separate controller for each of the turbine blades. This method has the advantage of being simple to design a controller, and assumes each blade is uncoupled. For a three bladed turbine, three separate single-input single-output (SISO) controllers can be cascaded to determine the pitch demand (Figure \ref{fig:single}). Additionally, the controller does not require the rotor azimuth angle as a measurement \citep{19_Lio}.
+\myFigure[0.6]{Single.PNG}{Control layout for single blade control. The pitch demand for each blade, $\tilde{\theta}_i$, is determined only from the measurement of that blade, $\tilde{M}_i$. Figure adapted from \citep{19_Lio}.}{fig:single}
+
+
+\subsection{Coleman Transform Control}
+The Coleman transformation is the most commonly used method for IPC in literature as mentioned in Section \ref{sec:litreview}. It transforms the stresses or tip deflection from the rotating rotor frame of reference to the stationary frame of reference. An advantage of using the Coleman Transform is that the time-periodic nature of the rotating system becomes time-invariant, which is appealing for control design. Unlike the single blade control which assumes each of the blades is decoupled, Coleman-Transform control often assumes the tilt and yaw direction axes are decoupled. Therefore only two SISO controllers are required, shown in Figure \ref{fig:coleman}. Finally, the tilt and yaw axis are zero mean, making the controller reference zero \citep{19_Lio}. \\~\\
+There are a number of considerations which should be taken into account regarding the assumptions of the controller. \citet{1_Lu} provides a mathematical formulation of the tilt-yaw coupling, showing that the assumption that tilt and yaw are decoupled does not hold in certain scenarios. The tilt-yaw coupling becomes more significant with increasing rotor speed, and may require further attention in the control design process. Furthermore, the transformation itself is nonlinear, causing a frequency shift in the transformed domain. In particular, the 1p blade loades are shifted to 0p and 2p, and the 3p loads which are significant to non-rotating loads, are shifted to 2p and 4p in the Coleman transformed space. Both of these effects can cause poor control performance if they are not taken into account in the design process.
+\myFigure[0.6]{Coleman.PNG}{Control layout for Coleman transform based control. The blade measurements are transformed into a tilt and yaw variable, $\tilde{M}_{tilt}$ and $\tilde{M}_{yaw}$. The control action is performed in this space and transformed back to the rotating frame. Figure adapted from \citep{19_Lio}. }{fig:coleman}
+\begin{gather}
+\renewcommand\arraystretch{1.8}  % THIS LINE CHANGES THE VERTICAL SPACING OF A MATRIX EXPRESSION
+ \begin{bmatrix} M_1 (t) \\ M_2(t) \\ M_3(t) \end{bmatrix}
+ =
+  \underbrace{
+  \begin{bmatrix}
+   1 &  \cos \phi (t)  &  \sin \phi (t) \\
+1    & \cos \left( \phi (t) + \frac{2\pi}{3} \right) & \sin \left( \phi (t) + \frac{2\pi}{3} \right) \\
+ 1   & \cos \left( \phi (t) + \frac{4\pi}{3} \right) & \sin \left( \phi (t) + \frac{4\pi}{3} \right) \\
+   \end{bmatrix}}_{coleman transform}
+    \begin{bmatrix} \bar{M} (t) \\ M_{\text{tilt}}(t) \\ M_{\text{yaw}}(t) \end{bmatrix}
+\end{gather}
+\begin{gather}
+\renewcommand\arraystretch{1.8}  % THIS LINE CHANGES THE VERTICAL SPACING OF A MATRIX EXPRESSION
+ \begin{bmatrix} \bar{M} (t) \\ M_{\text{tilt}}(t) \\ M_{\text{yaw}}(t) \end{bmatrix}
+ =
+  \underbrace{
+  \begin{bmatrix}
+   \frac{1}{3} & \frac{1}{3} & \frac{1}{3} \\
+    \frac{2}{3} \cos \phi (t) & 
+    \frac{2}{3} \cos \left( \phi (t) + \frac{2\pi}{3} \right) &
+    \frac{2}{3} \cos \left( \phi (t) + \frac{4\pi}{3} \right) \\
+    \frac{2}{3} \sin \phi (t) & 
+    \frac{2}{3} \sin \left( \phi (t) + \frac{2\pi}{3} \right) &
+    \frac{2}{3} \sin \left( \phi (t) + \frac{4\pi}{3} \right) \\
+   \end{bmatrix}}_{invers coleman transform}
+    \begin{bmatrix} M_1 (t) \\ M_2(t) \\ M_3(t) \end{bmatrix}
+\end{gather}
+
+
+\subsection{Clarke Transform Control}
+to do: insert equation for clarke transform.
+IPC using the Clarke transformation is less commonly used in literature, but has shown success in load reduction \cite{zhang2013proportional}. Similar to the single blade transformation, the Clarke transformation does not require an azimuth angle as an input as it remains in the rotor frame. The Clarke transform projects the blades onto two perpendicular axis in the rotor plane, $\alpha$ and $\beta$, as seen in Figure \ref{fig:clarke}. Therefore only requiring two SISO controllers. This indicating that a single blade controller with three SISO controllers may be over-defined \citep{19_Lio}.
+\myFigure[0.6]{Clarke.PNG}{Control layout for Clarke transform based control. The blade measurements are transformed to orthogonal axes in the rotating frame, $\tilde{M}_\alpha$ and $\tilde{M}_\alpha$, where the control action is performed and transformed back to the original rotor space. Figure adapted from \citep{19_Lio}.}{fig:clarke}
+
+\section{Equivalence between single-bladed, Coleman transform-based, and Clarke transform-based control}
+\citet{20_lio2017fundamental}, it is shown there are equivalent control laws for each transformation outlined above, and that these equivalent controllers yield identical performance. 
+
+
+
+\section{Filter Design Using Loop Shaping}
+The controller is designed using loop shaping. Loop shaping involves adjusting the frequency response of the close-loop systems to achieve certain control objectives. In the case of this project, the close-loop transfer function is desired to have attenuation at harmonics of $f_{1p}$, while passing low frequency signals. The frequency response of the entire control loop can be adjusted by designing the control transfer function, $K(s)$ to have the required frequency response. In order to do this, a number of basic building blocks are outlined in this section from which a linear controller is designed. The controller is designed by placing the poles and zeros of the transfer function. Different combinations of poles and zeros generate different frequency responses, outlined as follows. 
+
+\section{Controller Discretisation}
+Although control design is performed in continuous time, the controller for this application is implemented digitally. For this reason, the continuous controller must be transformed to be implemented as a discrete time controller. The advantage of designing an LTI controller is that there is a large body of knowledge for performing continuous to discrete transformations. 
+\\~\\
+It is not possible to produce a discrete system which perfectly matches the frequency and time domain performance of its continuous counterpart. For this reason, many methods exist. The Impulse invariant method, zero order hold method, and first order hold method are examples of continuous-to-discrete methods which produce discrete systems which exactly match certain time-domain response behaviours of a continuous system, namely the impulse, step, and ramp response respectively. The zero order hold method, for example, is the default method used in MATLAB's \texttt{c2d} function. Despite its common use, time-domain invariant methods do not preserve the frequency domain response of a system as well as other methods. As the frequency response of an IPC controller is of high importance, a different discretisation method is sought after.
+\\~\\
+Two methods were investigated which better preserve the frequency response of the system: the matched-pole-zero approximation and the bilinear transform. Both methods showed comparable frequency responses due to the high sampling frequency of the controller compared to the frequencies of the wind turbine system. However, it was found that the matched-pole-zero approximation encountered numerical instabilities more easily than the bilinear transform. 
+
+
+
+
+
+\subsection{Matched-Pole-Zero Approximation (MPZ)}
+The MPZ method involves directly mapping the continuous poles and zeros, $s_p$ and $s_z$ from the s-domain to equivalent locations in the z-domain, $z_p$ and $z_z$, using the transformation $z_p = e^{s_pT_s}$ and $z_z = e^{s_zT_s}$ where $T_s$ is the sampling time of the discrete system. Expressed another way, a continuous transfer function of the form:
+\begin{equation}
+H_a(s) = K_a\frac{\prod\limits_{i=0}^{n}(s-s_{zi})}{\prod\limits_{i=0}^{m}(s-s_{pi})}
+\end{equation}
+is transformed to a discrete transfer function:
+\begin{equation}H_d(z) = K_d\frac{\prod\limits_{i=0}^{n}(z-e^{s_{pi}T_s})}{\prod\limits_{i=0}^{m}(z-e^{s_{zi}T_s})}\end{equation}
+Additionally, the continuous zeros at infinity are mapped to discrete zeros at $z=-1$, and the gain of the digital transfer function is chosen such that the DC gains of both transfer functions is equal. That is:
+\begin{align}
+    H_a(s)|_{s=0} &= H_d(z)|_{z=1}\\
+    \Rightarrow K_a\frac{b_0}{a_0} &= K_d\frac{\sum b_i}{\sum a_i}
+\end{align}
+\subsection{Bilinear Transformation}
+The bilinear transformation is a first order approximation of the mapping of $s \leftarrow \frac{1}{T}\ln{z}$, where the latter transformation is the exact transformation between the $s$ and $z$ domain. the bilinear transformation is defined as:
+$$s \leftarrow \frac{2}{T}\frac{z-1}{z+1}$$
+Where $T$ is the sampling time of the discrete system. 
+\begin{equation}
+    H_d(z) \approx H_a(s)|_{s=\frac{2}{T}\frac{z-1}{z+1}} =\left(\frac{T}{2}(z+1)\right)^r\frac{\prod\limits_{i=1}^{m}[(1-\frac{T}{2}s_{zi})z - (1+\frac{T}{2}s_{zi})]}{\prod\limits_{i=1}^{n}[(1-\frac{T}{2}s_{pi})z - (1+\frac{T}{2}s_{pi})]}
+\end{equation}
+Both the bilinear transform and the MPZ method preserve stability between the continuous and discrete systems, and are not able to perfectly preserve the frequency response of the continuous and discrete systems. Although both methods are found to produce similar discretisations, the bilinear transform is more generally used in literature due to the ability to prewarp the response at a particular frequency \cite{jackson2013digital}. It was also observed in this project that the bilinear transform was more successful in mapping high order filters, whereas the MPZ method tends to produce numerical instabilities. Furthermore, the MPZ method was more likely to deviate in the phase response of the filter compared to the bilinear transform, as shown in Figure \ref{fig:bilinearvsMPZ}, which can lead to unforeseen instabilities in the closed loop system.
+
+\myFigure[0.7]{discrete_bilinearVsZPM_fs=5.png}{Bilinear transformation versus MPZ method for continuous to discrete conversion. The MPZ method can be seen to deviate in the phase response more than the bilinear transform. ($f_s = 5Hz$)}{fig:bilinearvsMPZ}
+
+
+\subsection{Effect of sampling rate on frequency response}
+The sampling rate of the discrete system should be chosen such that it is high enough to not experience aliasing and frequency response warping while not being to high as to be redundant. The Nyquist-Shannon sampling theorem gives a theoretical boundary stating that the sampling rate should be at least twice the required bandwidth \cite{smith1997scientist}. However, a more common and practical guideline is to have a sampling frequency, $f_s>10f_b$, where $f_b$ is the desired bandwidth of the controller \cite{hendricks2008linear}. The choice of $f_b$ draws from the work of \citet{bergami2014analysis}, which shows that the majority of fatigue occures at frequencies below 2Hz for the NREL 5MW turbine. This frequency limit corresponds to the 10P frequency of the NREL turbine operating at above rated speeds. The corresponding 10P frequency for the DTU10MW turbine used in this project is 1.6Hz. Therefore to be able to account for this full range of load-relevant frequencies as well as having a sufficient amount of room for error, the minimum sampling rate of the sensor should be 16Hz.
+As an example, the continuous transfer function in Figure \ref{fig:discrete_sampletime} was discretised using the bilinear transformation with different sampling rates. A sampling rate above 5Hz is seen to be sufficient to address up to $f_{4p}$ with little distortion in the frequency response.  frequency of 16Hz would certainly be sufficient for this range of frequencies. In this project, it is assumed that the tip deflection sensor sampling rate is significantly higher than the required bandwidth, and that controller calculations can be performed without delay. To simplify the working code, the sampling rate is set to $100Hz$ in order to match the sampling rate of the HAWC2 simulation. However it should be noted that a lower sampling rate could be used. 
+
+\myFigure[0.7]{discrete_sampletime.png}{}{fig:discrete_sampletime}
+
+\subsection{Discrete frequency to discrete time domain transformation}
+In the above sections, methods for transforming a continuous controller transfer function into a discrete controller transfer function is outlined. The final step is to convert the transfer function, which is in the frequency domain, into a time domain function which can be executed and implemented in machine code. This is achieved by performing the inverse $\mathcal{Z}$ transform. For a discrete transfer function of the form:
+\begin{equation}
+    H_d(z) = \frac{Y(z)}{X(z)} = \frac{b_0 + b_1z^{-1} + ... + b_mz^{-m}}{1 + a_1z^{-1} + ... + a_nz^{-n}}
+\end{equation}
+the inverse $\mathcal{Z}$ of this expression yields:
+\begin{equation}
+    y[k] = \sum\limits_{i=0}^{N-1}b_ix[k-i] - \sum\limits_{i=1}^{N-1}a_iy[k-i]
+\end{equation}
+or perhaps this looks neater...
+\begin{align}
+y[k] =& b_0x[k] + b_1x[k-1] +  ... + b_mx[k-m] \\
+&- a_1y[k-1] - a_2y[k-2] -  ... - a_ny[k-n]
+\end{align}
+Where $x[k]$ and $y[k]$ are respectively the discrete input and output signal at the $kth$ time step. It can be seen that the coefficients, $b_i$ and $a_j$ for $i= 0, 1, ... m$ and $j=0, 1, ..., n$ are the same for both Equations XX and XX. This makes it simple to convert a transfer function in $Z$ space into the time domain by inspection. Additionally, Equation XX is a linear difference equation which is easily executed. A control transfer function converted to this form can be executed in a digital system.  
+
+\section{HAWC2 integration}
+Rapid prototyping and testing was performed by interfacing a Python script with HAWC2 using TCP.
+\\~\\
+a Dynamic Link Library (DLL) was created for HAWC2 in Fortran to be able to implement the controller without the need of Python. Although this process was the most time consuming, I am not sure the best way to write this in the report. The DLL executes the following equations:
+
+
+
+
+
+
+$$
+y[k]=\sum_{i=0}^{N-1}b_ix[k-i] - \sum_{i=1}^{N-1}a_iy[k-i]
+$$
+
+\textit{Let $x_i[k]$ and $\theta_i[k]$ be the tip deflection measurement and the pitch demand (including IPC) for the $i$th blade at the $k$th discrete time step.  Let $b_0, b_1, ..., b_{N-1}$ and $a_0, a_1, ..., a_{N-1}$ be the feed forward and feed backward coefficients for a digital controller of order $N$. $x_i[k]$ and $\theta_i[k]$ can be decomposed into a mean and a deviation term:
+$$ x_i[k]= \bar{x}[k] + \tilde{x}_i[k]$$}
+$$ \theta_i[k]= \bar{\theta}[k] + \tilde{\theta}_i[k]$$
+
+Where $\bar{x}[k] = \langle x[k]\rangle$, $\bar{\theta}[k] = \langle\theta[k]\rangle$, and $\langle \tilde{x}[k]\rangle = \langle \tilde{\theta}[k]\rangle = 0$. The bracket operator, $\langle \cdot \rangle$ is defined as the average over the three blades. that is, $\langle x \rangle = (x_1 + x_2 + x_3)/3$ for some quantity, $x$. 
+\\~\\
+Lemma: if $\tilde{\theta}_i$ is determined from the control law:
+$$\tilde{\theta}_i[k] = \sum_{j=0}^{N-1}b_j\tilde{x}[k-j] - \sum_{j=1}^{N-1}a_j\tilde{\theta}_i[k-j]$$
+ 
+and $\langle \tilde{\theta}[n]\rangle = 0$ for all $n<k$ then the condition $\langle \tilde{\theta}[k]\rangle = 0$ is enforced.
+
+proof:
+[insert proof]
+
+
+The pitch demands for each blade using IPC are determined using XX and setting $\bar{\theta}[k]$ to the collective pitch control demand. To ensure the power output of the turbine is unaffected, the above calculation enforces that the average pitch demand of all three blades is equal to the the power pitch demand. That is, $\bar{\theta}[k] = \langle\theta[k]\rangle$. As shown in the above proof, as long as all previous pitch demands have a zero mean, and the collective pitch control demand remains constant, then the mean of all future IPC pitch demands will equal the collective pitch control demand. In practice, the CPC pitch demand varies over time, which can lead to some variations in this example. However, the CPC pitch demand varies at a much slower rate than the IPC, and it is shown in the results that the difference in power output is negligible between CPC and IPC.
+
+$$$$

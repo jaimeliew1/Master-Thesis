@@ -1,0 +1,25 @@
+The data used in this project come from HAWC2 simulations of the DTU10MW turbine model. 
+
+Simulations are performed on three variations of the turbine model:
+\begin{itemize}
+    \item Simplified model
+    \item Open loop model
+    \item Closed loop model
+\end{itemize}
+
+The simplified model is used for the blade system modelling (Section xx), where the interaction between blade pitch action and blade tip deflection are investigated. In order to do this, all other influences on tip deflection are eliminated by simplifying the turbine model. All turbine components except for the blades are set to be rigid. The vertical wind profile is uniform and without turbulence, and the nacelle tilt angle and blade coning angle are set to zero to ensure the tip deflection does not experience variations due to the changing blade azimuth angle. The simplified model simulations is run in HAWC2 with computation interactions with Python to initiate the step in pitch demand.
+
+\\~\\
+The open loop model consists of a fully flexible DTU10MW turbine without IPC. It is used as a reference from which the performance of the closed loop model is compared. In terms of the aerodynamic model, vertical wind shear, tower shadow effects, and turbulence are included. The DTU basic controller (REFERENCE) is used for torque control and CPC. 
+\\~\\
+The closed loop system has the same structural and aerodynamic, and control properties as the open loop model, however the control system is augmented to include TDC. TDC is implemented by using a custom made dynamic link library designed for HAWC2 which performs individual pitch control using tip deflection sensors.
+\\~\\
+The open and closed loop model simulations are performed over a range of wind speeds between 4 and 26m/s in 2m/s increments. The performance of the TDC is evaluated by comparing the loads of the open and close loop simulations. The turbulent wind field is generated in accordance with the normal turbulence model defined in IEC 61400. Both simulations are run for 30 minutes (3x10minute simulations) at each wind speed, and both the open and closed loop simulations are subjected to the same turbulent seeds. 
+
+\subsubsection{HAWC2-Python Interface}
+Two methods for implementing TDC are used in this project. The first is by interfacing with the turbine model in real time as the HAWC2 simulation runs using Python. The second method, described in the next section, is with a HAWC2 DLL designed to perform TDC.
+\\~\\
+The HAWC2-Python interface uses the Transmission Control Protocol (TCP) to allow data transmission between the two applications. At each simulation time step, HAWC2 sends tip deflection measurements from each of the three blades to a Python script. The Python script then calculates the pitch demand for each blade and sends these values back to the HAWC2 simulation. A Python module was developed for this purpose, for which the code can be found in Appendix XX. The advantage of interfacing HAWC2 with Python is that rapid prototyping can be performed for different control architectures without the time investment of developing an equivalent HAWC2 DLL.
+
+\subsection{Tip Deflection Control HAWC2 DLL}
+In addition to the HAWC2-Python interface, a HAWC2 DLL was also developed in Fortran which is able to implement single bladed tip deflection control. The advantage of using a DLL instead of Python is that the control parameters are defined within the simulation set-up file instead of inside a separate Python script. The DLL is designed to implement a controller on each blade separately. The controller takes tip deflection measurements for a particular blade as well as the CPC power pitch demand, and outputs pitch actuator demands for that particular blade. The control action is defined as a discrete infinite impulse response (IIR) filter represented as a difference equation, described in section XX. The set of equations and an equivalent Python code is shown in Section XX (theoretical/methodology).

@@ -1,0 +1,46 @@
+\section{Background}
+As the size of wind turbines continues to increase, new challenges arise in terms of rotor aerodynamics, structural design and control. large rotors require slender, lighter blades to combat the increase in mass and manufacturing costs. This comes at the cost of exacerbated loads in a wind turbine. It is becoming both increasingly difficult and costly to passively mitigate damage due to loads. For this reason, the wind industry is focusing more attention on augmenting the turbine control system to to actively mitigate loads and to extend the lifespan of a wind turbine. 
+\\~\\
+\section{Motivation}
+The focus of this project is on active blade load reduction using state-of-the-art tip deflection sensors as controller inputs. Wind turbines experience periodic loads as the rotor sweeps across the rotor plane. Tower shadow, gravity loads, wind shear, yaw misalignment and turbulence are common sources of excitations experienced by the rotor blades. The fatigue caused by these forces becomes more significant for larger rotors, and can significantly reduce the lifetime of the components \citep{2_Kanev}. The main contribution to flapwise tip deflection is from the aerodynamic thrust force which varies over space and time due to the wind profile, turbulence and blade pitch angle. As tip deflection and blade root stress are related, a control system using tip deflection readings as an input could potentially reduce the effects of these harsh and chaotic forces on blade fatigue. 
+\\~\\
+The tip deflection sensor is a novel approach to providing real time feedback for a wind turbine. Developed by LM Wind Power, the iRotor project can provide high-bandwidth flapwise tip deflection measurements for each blade via radio signals. The use of tip deflection sensors is very rare in literature, and it will be the focus of this project to show the potential applications of these sensors for load reduction using individual pitch control.
+
+\section{Research Objectives}
+\label{sec:objective}
+The objectives of this project are split into two parts. The first part relates to the development of a turbine control system for load reduction which makes use of tip deflection sensors. The second part involves evaluating the effectiveness of such a control system. 
+\begin{itemize}
+    \item How can tip deflection sensors be integrated in a wind turbine control system for load reduction?
+    \item To what degree can a tip deflection controller reduce loads in a wind turbine? 
+\end{itemize}
+The first question is approached by investigating load control techniques used in literature, and synthesizing a new controller using tip deflection sensor technology. As well as producing the a controller which can be integrated in the standard wind turbine control loop, a method for tuning the tip deflection sensor will be investigated to ensure such a controller can be adapted to different turbine types. To answer this question, a relationship between tip deflection and blade root bending moment will be investigated in order to relate tip deflection and fatigue loading. Furthermore, different combinations of state observers, transformations and control strategies will be explored to find a working control system for the task.
+\\~\\
+The second question involves implementing the tip deflection controller in simulation. The controller will be tested in relevant load cases defined in the wind turbine standard, IEC 61400-1 \cite{international2005iec}. Simulations will be performed in realistic conditions, including turbulent wind fields, as well as including the effects of turbine structural dynamics, and aeroelastic effects due to wind shear, tower shadow, etc. As a benchmark for comparison, loads will also be calculated for a turbine with no tip deflection sensor. To answer this question, the operating conditions during which the controller can operate adequately must be determined. Furthermore, the appropriate load cases to adequately test the performance of the controller must be decided. 
+
+\section{HAWC2 Simulation Environment}
+HAWC2 is an aeroelastic code able to simulate wind turbine responses in the time domain. HAWC2 is used in this project to produce high fidelity simulation data to evaluate and verify the effectiveness of the control system. Two External Link Libraries (DLL) where used in this project to assist in the control design and verification.
+
+\subsection*{Python Interface Via TCP/IP}
+A Python module (Appendix X) was written for the purpose of rapid prototyping and testing on the reference turbine. The module is able to receive sensor data from, and send commands to HAWC2 in real-time. Custom controllers can be implemented with ease using the module which interfaces a Python script with HAWC2 using the TCP/IP protocol DLL.
+\subsection{Individual Pitch Control Augmentation}
+A DLL was written in Fortran for this project which is able to perform individual pitch control. The IPC controller is augmented over the power controller and is able to implement discrete single-bladed control defined by a list of feed-forward and feed-backward coefficients. 
+
+\section{DTU10MW Reference Turbine}
+What it is and why I chose to use it.
+
+
+
+
+
+\section{Report Outline}
+
+\subsection*{Theoretical Framework}
+Relating Tip Deflection and Blade Loads, Disturbance rejection (sensitivity function, simple block diagram), Tracking (augmented block diagram), Robustness measures, Blade transformations and equivalence, controller discretisation.
+\subsection*{Blade Modelling}
+Pitch transfer function, tip deflection frequency response and identify targeted frequencies to attenuate.
+
+
+\subsection*{Tip Disturbance Rejection Control Design}
+
+\subsection*{Tip Trajectory Tracking Control Design}
+\subsection*{Conclusion and Recommendations}
